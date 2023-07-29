@@ -16,6 +16,7 @@ int main()
 
     int socket_fd = socket(AF_LOCAL, SOCK_STREAM, 0);
     int new_socket_fd;
+    int size_server = sizeof(server);
 
     char buffer_1[BUFFER_SIZE] = "Hello!";
     char buffer_2[BUFFER_SIZE];
@@ -31,7 +32,7 @@ int main()
         printf("Socket creat!\n");
     }
 
-    if(bind(socket_fd, (const struct sockaddr *) &server, sizeof(server)) == -1)
+    if(bind(socket_fd, (const struct sockaddr *) &server, size_server) == -1)
     {
         perror("Bind");
         close(socket_fd);

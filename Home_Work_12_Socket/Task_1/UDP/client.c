@@ -21,6 +21,7 @@ int main()
 
     int socket_fd = socket(AF_LOCAL, SOCK_DGRAM, 0);
     int size_server = sizeof(server);
+    int size_client = sizeof(client);
     
     if(socket_fd == -1)
     {
@@ -33,7 +34,7 @@ int main()
         printf("Success socket!\n");
     }
 
-    if(bind(socket_fd, (const struct sockaddr *) &client, sizeof(client)) == -1)
+    if(bind(socket_fd, (const struct sockaddr *) &client, size_client) == -1)
     {
         perror("Bind");
         close(socket_fd);
@@ -47,7 +48,7 @@ int main()
     char message_1[BUFFER_SIZE] = "Hello!";
     char message_2[BUFFER_SIZE];
 
-    if(sendto(socket_fd, message_1, BUFFER_SIZE, 0, (const struct sockaddr *) &server, sizeof(server)) == -1)
+    if(sendto(socket_fd, message_1, BUFFER_SIZE, 0, (const struct sockaddr *) &server, size_server) == -1)
     {
         perror("Sendto");
         close(socket_fd);

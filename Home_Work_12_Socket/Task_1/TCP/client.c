@@ -20,6 +20,8 @@ int main()
     strncpy(client.sun_path, NAME_FILE_CLIENT, sizeof(client.sun_path) - 1);
 
     int socket_fd = socket(AF_LOCAL, SOCK_STREAM, 0);
+    int size_server = sizeof(server);
+    int size_client = sizeof(client);
 
     char buffer_1[BUFFER_SIZE] = "Hello!";
     char buffer_2[BUFFER_SIZE];
@@ -35,7 +37,7 @@ int main()
         printf("Success socket!\n");
     }
 
-    if(bind(socket_fd, (struct sockaddr *) &client, sizeof(client)) == -1)
+    if(bind(socket_fd, (const struct sockaddr *) &client, size_client) == -1)
     {
         perror("Bind");
         close(socket_fd);
@@ -46,7 +48,7 @@ int main()
         printf("Success bind!\n");
     }
     
-    if(connect(socket_fd, (const struct sockaddr *) &server, sizeof(server)) == -1)
+    if(connect(socket_fd, (const struct sockaddr *) &server, size_server) == -1)
     {
         perror("Connect");
         close(socket_fd);

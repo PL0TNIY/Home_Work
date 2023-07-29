@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define PORT 9719
+#define SERVER_PORT 9719
 #define ADDRESS "127.0.0.1"
 #define BUFFER_SIZE 100
 
@@ -16,9 +16,16 @@ int main()
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = inet_addr(ADDRESS);
-    server.sin_port = htons(PORT);
+    server.sin_port = htons(SERVER_PORT);
+
+    struct sockaddr_in client;
 
     int socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
+    int size_server = sizeof(server);
+    int size_client = sizeof(client);
+
+    char message_1[BUFFER_SIZE] = "Hello!";
+    char message_2[BUFFER_SIZE];
 
     if(socket_fd == -1)
     {
@@ -31,7 +38,7 @@ int main()
         printf("Success socket!\n");
     }
 
-    if(bind(socket_fd, (const struct sockaddr *) &server, sizeof(server)) == -1)
+    if(bind(socket_fd, (const struct sockaddr *) &server, size_server) == -1)
     {
         perror("Bind");
         close(socket_fd);
@@ -40,15 +47,10 @@ int main()
     else
     {
         printf("Success bind!\n");
+        printf("Server IP: %s\n", inet_ntoa(server.sin_addr));
+        printf("Server port: %d\n", ntohs(server.sin_port));    
     }
 
-    struct sockaddr_in client;
-    
-    int size_client = sizeof(client);
-
-    char message_1[BUFFER_SIZE] = "Hello!";
-    char message_2[BUFFER_SIZE];
-    
     if(recvfrom(socket_fd, message_2, BUFFER_SIZE, 0, (struct sockaddr *) &client, &size_client) == -1)
     {
         perror("Recvfrom");
@@ -57,6 +59,10 @@ int main()
     }
     else
     {
+        printf("CLient IP: %s\n", inet_ntoa(client.sin_addr));
+        printf("Client port: %d\n", ntohs(client.sin_port));
+        printf("%s\n", message_2);
+
         if(sendto(socket_fd, message_1, BUFFER_SIZE, 0, (const struct sockaddr *) &client, size_client) == -1)
         {
             perror("Sendto");
@@ -65,7 +71,6 @@ int main()
         }
         else
         {
-            printf("%s\n", message_1);
             close(socket_fd);
         }
     }

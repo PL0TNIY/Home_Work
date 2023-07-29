@@ -17,6 +17,9 @@ int main()
 
     int socket_fd = socket(AF_LOCAL, SOCK_DGRAM, 0);
 
+    char message_1[BUFFER_SIZE] = "Hello!";
+    char message_2[BUFFER_SIZE];
+
     if(socket_fd == -1)
     {
         perror("Socket");
@@ -42,9 +45,6 @@ int main()
     struct sockaddr_un client;
 
     int size_client = sizeof(client);
-
-    char message_1[BUFFER_SIZE] = "Hello!";
-    char message_2[BUFFER_SIZE];
 
     if(recvfrom(socket_fd, message_2, BUFFER_SIZE, 0, (struct sockaddr *) &client, &size_client) == -1)
     {
