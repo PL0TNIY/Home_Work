@@ -1,23 +1,25 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define n 5
 
 int main()
 {
     int array[n]; 
-    int count = 0;
+    int counter = 0;
 
     for(int i = 0; i <= n - 1; i++)
     {
-        count++;
-        array[i] = count;
+        counter++;
+        array[i] = counter;
     }
 
     for(int j = 0; j <= n - 1; j++)
     {
-        count--;
-        printf("%-2d", array[count]);
+        counter--;
+
+        printf("%-2d", array[counter]);
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

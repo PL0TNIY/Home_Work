@@ -1,39 +1,43 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define n 5
 
 int main()
 {
     int array[n][n];
-    int count = 1;
+    int counter = 1;
 
     for(int move = 0; move <= n - 2; move++)
     {
         for(int q = 0 + move; q <= n - 1 - move; q++)
         {
-            array[n - n + move][q] = count;
-            count++;
+            array[n - n + move][q] = counter;
+            counter++;
         }
-        count--;
+
+        counter--;
 
         for(int w = 0 + move; w <= n - 1 - move; w++)
         {   
-            array[w][n - 1 - move] = count;
-            count++;
+            array[w][n - 1 - move] = counter;
+            counter++;
         }
-        count--;
+
+        counter--;
 
         for(int e = n - 1 - move; e >= 0 + move; e--)
         {
-            array[n - 1 - move][e] = count;
-            count++;
+            array[n - 1 - move][e] = counter;
+            counter++;
         }
-        count--;
+
+        counter--;
 
         for(int r = n - 1 - move; r >= n - (n - 1) + move; r--)
         {
-            array[r][n - n + move] = count;
-            count++;
+            array[r][n - n + move] = counter;
+            counter++;
         }
     }
 
@@ -43,8 +47,9 @@ int main()
         {
             printf("%d\t", array[i][j]);
         }
+
         printf("\n");
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

@@ -1,22 +1,25 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define n 3
 
 int main()
 {
     int array[n][n];
-    int count = 0;
+    int counter = 0;
 
     for(int i = 0; i <= n - 1; i++)
     {
         for(int j = 0; j <= n - 1; j++)
         {
-            count++;
-            array[i][j] = count;
+            counter++;
+            array[i][j] = counter;
+
             printf("%d\t", array[i][j]);
         }
+
         printf("\n");
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
