@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-    unsigned long int digit = 0xaabbccdd;
     int replace_byte;
+
+    unsigned long int digit = 0xaabbccdd;
     unsigned long int new_byte;
 
     printf("Digit: %lx\n", digit);
@@ -15,6 +17,7 @@ int main()
 
     printf("Replace byte: ");
     scanf("%d", &replace_byte);
+
     printf("New byte: ");
     scanf("%lx", &new_byte);
 
@@ -43,5 +46,5 @@ int main()
 
     printf("New digit: %lx\n", digit);
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
