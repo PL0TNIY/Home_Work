@@ -1,9 +1,12 @@
 TARGET_SERVER = server
+SERVER_SOURCE = server.c
+
 TARGET_CLIENT_TCP = client_tcp
 TARGET_CLIENT_UDP = client_udp
-SERVER_SOURCE = server.c
+
 CLIENT_SOURCE_TCP = client_tcp.c
 CLIENT_SOURCE_UDP = client_udp.c
+
 COMPIELER = gcc
 
 all: $(TARGET_SERVER) $(TARGET_CLIENT_UDP) $(TARGET_CLIENT_TCP)

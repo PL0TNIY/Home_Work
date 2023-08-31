@@ -1,7 +1,9 @@
 TARGET_SERVER = server
 TARGET_CLIENT = client
+
 SERVER_SOURCE = server.c
 CLIENT_SOURCE = client.c
+
 COMPIELER = gcc
 
 all: $(TARGET_SERVER) $(TARGET_CLIENT)
