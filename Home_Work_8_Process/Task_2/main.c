@@ -1,14 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 int main()
 {
-    pid_t process;
     int count_parent = 1;
     int count_child = 0;
+    
+    pid_t process;
 
     printf("PDI parent №%d: %d\n\n", count_parent, getpid());
 
@@ -19,9 +20,10 @@ int main()
 
         process = fork();
 
-        if(process < 0)
+        if(process == -1)
         {
             printf("Error");
+            exit(EXIT_FAILURE);
         }
 
         if(process == 0)
@@ -34,9 +36,10 @@ int main()
             {   
                 process = fork();
 
-                if(process < 0)
+                if(process == -1)
                 {
                     printf("Error");
+                    exit(EXIT_FAILURE);
                 }
 
                 if(process == 0)
@@ -44,21 +47,20 @@ int main()
                     printf("Process child\n");
                     printf("PDI child: %d\n", getpid());
                     printf("PDI parent: %d\n\n", getppid());
-                    exit(0);
+
+                    exit(EXIT_FAILURE);
                 }
                 else
                 {
                     wait(NULL);
                 }
             }
-            exit(0);
+            
+            exit(EXIT_FAILURE);
         }
         else
         {
             wait(NULL);
         }
     }
-
-    return 0; 
 }
-
