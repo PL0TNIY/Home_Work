@@ -1,96 +1,89 @@
-#include <sys/socket.h>
-#include <sys/un.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
 #include <unistd.h>
 
-#define NAME_FILE_SOCKET "/tmp/socket_server"
-#define BUFFER_SIZE 100
+#define PATH_SERVER "/tmp/socket_server"
+#define SIZE_DATA 128
 
 int main()
 {   
+    char message_send[SIZE_DATA] = "Hello, I'm server!";
+
     struct sockaddr_un server;
+    memset(&server, 0, sizeof(struct sockaddr_un));
     server.sun_family = AF_LOCAL;
-    strncpy(server.sun_path, NAME_FILE_SOCKET, sizeof(server.sun_path) - 1);
+    strcpy(server.sun_path, PATH_SERVER);
+
+    struct sockaddr_un client;
 
     int socket_fd = socket(AF_LOCAL, SOCK_STREAM, 0);
-    int new_socket_fd;
-    int size_server = sizeof(server);
-
-    char buffer_1[BUFFER_SIZE] = "Hello!";
-    char buffer_2[BUFFER_SIZE];
 
     if(socket_fd == - 1)
     {
-        perror("Socket!\n");
-        close(socket_fd);
+        perror("Socket");
         exit(EXIT_FAILURE);
     }
-    else
-    {
-        printf("Socket creat!\n");
-    }
 
-    if(bind(socket_fd, (const struct sockaddr *) &server, size_server) == -1)
+    if(bind(socket_fd, (const struct sockaddr *) &server, 
+                sizeof(struct sockaddr_un)) == -1)
     {
         perror("Bind");
         close(socket_fd);
         exit(EXIT_FAILURE);
     }
-    else
-    {
-        printf("Success bind!\n");
-    }
-    
+
     if(listen(socket_fd, 1) == -1)
     {
         perror("Listen");
         close(socket_fd);
         exit(EXIT_FAILURE);
     }
-    else
-    {
-        printf("Success listen!\n");
-    }
-    
-    new_socket_fd = accept(socket_fd, NULL, NULL);
 
-    if(new_socket_fd == -1)
+    while(1)
     {
-        perror("Accept");
-        close(socket_fd);
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        printf("Success accept!\n");
-    }
+        printf("Server waiting connect client...\n");
 
-    if(recv(new_socket_fd, buffer_2, BUFFER_SIZE, 0) == -1)
-    {
-        perror("Recv");
-        close(new_socket_fd);
-        close(socket_fd);
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        printf("%s\n", buffer_2);
+        memset(&client, 0, sizeof(struct sockaddr_un));
 
-        if(send(new_socket_fd, buffer_1, BUFFER_SIZE, 0) == -1)
+        char message_recv[SIZE_DATA] = {0};
+
+        int size_sockaddr_un = sizeof(struct sockaddr_un);
+        int new_socket_fd = accept(socket_fd, (struct sockaddr *) &client, 
+                &size_sockaddr_un);
+
+        if(new_socket_fd == -1)
         {
-            perror("Send");
+            perror("Accept");
             close(socket_fd);
-            close(new_socket_fd);
             exit(EXIT_FAILURE);
         }
-        else
-        {
-            close(socket_fd);
-            close(new_socket_fd);
-        }
-    }
 
-    return 0;
+        printf("Client connected to server!\n\n");
+        printf("Server waiting message from client...\n");
+
+        if(recv(new_socket_fd, message_recv, SIZE_DATA, 0) == -1)
+        {
+            perror("Recv");
+            close(new_socket_fd);
+            close(socket_fd);
+            exit(EXIT_FAILURE);
+        }
+        
+        printf("Path client: %s\n", client.sun_path);
+        printf("Message: %s\n\n", message_recv);
+
+        if(send(new_socket_fd, message_send, SIZE_DATA, 0) == -1)
+        {
+            perror("Send");
+            close(new_socket_fd);
+            close(socket_fd);
+            exit(EXIT_FAILURE);
+        }
+
+        printf("Server send message to client!\n\n");
+    }
 }

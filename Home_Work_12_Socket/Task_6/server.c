@@ -9,7 +9,7 @@
 
 #define ADDRESS "127.0.0.1"
 #define SERVER_PORT 9171
-#define SIZE_DATA 100
+#define SIZE_DATA 128
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
 
     struct sockaddr_in client;
 
-    int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    int socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
     if(socket_fd == -1)
     {
@@ -42,55 +42,37 @@ int main()
     printf("Server IP: %s\n", inet_ntoa(server.sin_addr));
     printf("Server port: %d\n\n", ntohs(server.sin_port));
 
-    if(listen(socket_fd, 1) == -1)
-    {
-        perror("Listen");
-        close(socket_fd);
-        exit(EXIT_FAILURE);
-    }
-
     while(1)
     {
-        printf("Server waiting connect client...\n");
-
         memset(&client, 0, sizeof(struct sockaddr_in));
-        
+
         char message_recv[SIZE_DATA] = {0};
-
+        
         int size_sockaddr_in = sizeof(struct sockaddr_in);
-        int new_socket_fd = accept(socket_fd, (struct sockaddr *) &client, 
-                &size_sockaddr_in);
 
-        if(new_socket_fd == -1)
-        {
-            perror("Accept");
-            close(socket_fd);
-            exit(EXIT_FAILURE);
-        }
-
-        printf("Client connected to server!\n\n");
         printf("Server waiting message from client...\n");
 
-        if(recv(new_socket_fd, message_recv, SIZE_DATA, 0) == -1)
+        if(recvfrom(socket_fd, message_recv, SIZE_DATA, 0, 
+                    (struct sockaddr *) &client, &size_sockaddr_in) == -1)
         {
-            perror("Recv");
-            close(new_socket_fd);
+            perror("Recvfrom");
             close(socket_fd);
-            exit(EXIT_FAILURE); 
+            exit(EXIT_FAILURE);
         }
 
         printf("Client IP: %s\n", inet_ntoa(client.sin_addr));
         printf("Client port: %d\n", ntohs(client.sin_port));
         printf("Message: %s\n\n", message_recv);
 
-        if(send(new_socket_fd, message_send, SIZE_DATA, 0) == -1)
+        if(sendto(socket_fd, message_send, SIZE_DATA, 0, 
+                    (const struct sockaddr *) &client, size_sockaddr_in) == -1)
         {
-            perror("Send");
-            close(new_socket_fd);
+            perror("Sendto");
             close(socket_fd);
             exit(EXIT_FAILURE);
         }
 
-        printf("Server send message to server!\n\n");
+        printf("Server send message to client!\n\n");
+        
     }
 }
