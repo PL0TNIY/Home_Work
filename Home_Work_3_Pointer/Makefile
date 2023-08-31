@@ -1,0 +1,7 @@
+TARGET_MAIN = main
+SOURCE_MAIN= main.c
+
+COMPIELER = gcc
+
+$(TARGET_MAIN): $(SOURCE_MAIN)
+					@$(COMPIELER) $(SOURCE_MAIN) -o $(TARGET_MAIN) -w

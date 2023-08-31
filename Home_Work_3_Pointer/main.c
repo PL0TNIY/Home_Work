@@ -1,17 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-    unsigned int digit = 917;
+    unsigned char *pointer;
+
     int byte;
-    unsigned char *ptr;
-    ptr = &digit;
+    unsigned int digit = 917;
+
+    pointer = &digit;
 
     printf("Digit: %u\n", digit);
 
     for(int i = 0; i <= sizeof(digit) - 1; i++)
     {
-        printf("%d Byte: %u\t Address: %p\n", i + 1, *(ptr + i), ptr + i);
+        printf("%d Byte: %u\t Address: %p\n", i + 1, *(pointer + i), 
+                pointer + i);
     }
 
     printf("Replace byte: ");
@@ -20,26 +24,26 @@ int main()
     switch(byte)
     {
         case 1:
-            *ptr += 7;
+            *pointer += 7;
             break;
 
         case 2:
-            ptr++;
-            *ptr = *ptr + 9;
+            pointer++;
+            *pointer += 9;
             break;
 
         case 3:
-            ptr += 2;
-            *ptr += 11;
+            pointer += 2;
+            *pointer += 11;
             break;
 
         case 4:
-            ptr += 3;
-            *ptr += 13;
+            pointer += 3;
+            *pointer += 13;
             break;
     }
 
     printf("Result digit: %u\n", digit);
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }
